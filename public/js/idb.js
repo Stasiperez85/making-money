@@ -1,7 +1,7 @@
 // create variable to hold db connection
 let db;
-//establish a connecton to IndexDB database called 'budget_tracker' and set it to version 1
-const request = indexedDB.open('budget_tracker', 1)
+//establish a connecton to IndexDB database called 'budget' and set it to version 1
+const request = indexedDB.open('budget', 1)
 
 // this event will emit if the database version changes (nonexistant to version 1, v1 to v2, etc.)
 request.onupgradeneeded = function (event) {
@@ -15,10 +15,10 @@ request.onupgradeneeded = function (event) {
 request.onsuccess = function (event) {
   // when db is successfully created with its object store (from onupgradedneeded event above) or simply established a connection, save reference to db in global variable
   db = event.target.result;
-
+  console.log(db);
+  console.log(navigator.onLine);
   // check if app is online, if yes run uploadTransaction() function to send all local db data to api
   if (navigator.onLine) {
-    // we haven't created this yet, but we will soon, so let's comment it out for now
     uploadTransaction();
   }
 };
@@ -64,6 +64,7 @@ function uploadTransaction() {
       })
         .then(response => response.json())
         .then(serverResponse => {
+          console.log(serverResponse.message);
           if (serverResponse.message) {
             throw new Error(serverResponse);
           }
